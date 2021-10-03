@@ -41,6 +41,42 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildStatusCircularIndicator() {
+    return Container(
+      height: 130,
+      width: 130,
+      child: Stack(
+        children: [
+          Center(
+            child: Container(
+              height: 130,
+              width: 130,
+              decoration:
+                  BoxDecoration(
+                    gradient: SweepGradient(
+                      stops: [0.5, 0.5],
+                      colors: [AppColor.excluded, Colors.white]),
+                    color: Colors.grey[200], borderRadius: BorderRadius.circular(100)),
+            ),
+          ),
+          Center(
+            child: Container(
+              height: 115,
+              width: 115,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  gradient: RadialGradient(
+                    center: Alignment.topRight,
+                    radius: 0.8,
+                    colors: [Colors.white, AppColor.bgColor])),
+              child: Center(child: Text('65%', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -50,7 +86,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 30),
         height: height,
-        color: Color.fromRGBO(31, 31, 31, 1),
+        color: AppColor.bgColor,
         child: Column(
           children: [
             SizedBox(height: 10),
@@ -90,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                         child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                             decoration: BoxDecoration(
-                              color: _selectedIndex == i ?AppColor.paid() : null,
+                              color: _selectedIndex == i ? AppColor.paid : null,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -111,13 +147,7 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               child: Row(
                 children: [
-                  Container(
-                    height: 130,
-                    width: 130,
-                    decoration: BoxDecoration(
-                        color: Colors.white, borderRadius: BorderRadius.circular(100)),
-                    child: Center(child: Text('65%')),
-                  ),
+                  _buildStatusCircularIndicator(),
                   SizedBox(width: 40),
                   Expanded(
                     child: Container(
@@ -125,11 +155,15 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            _buildStatus(status: 'Paid', count: '9', color: AppColor.paid()),
-                            SizedBox(height: 5,),
-                            _buildStatus(status: 'Not paid', count: '4', color: AppColor.owing()),
-                            SizedBox(height: 5,),
-                            _buildStatus(status: 'Excluded', count: '3', color: AppColor.excluded()),
+                            _buildStatus(status: 'Paid', count: '9', color: AppColor.paid),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            _buildStatus(status: 'Not paid', count: '4', color: AppColor.owing),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            _buildStatus(status: 'Excluded', count: '3', color: AppColor.excluded),
                           ],
                         )),
                   ),
@@ -195,12 +229,12 @@ class _HomePageState extends State<HomePage> {
                                   child: flatObjList[i].isPaid
                                       ? Icon(
                                           Icons.check,
-                                          color: AppColor.paid(),
+                                          color: AppColor.paid,
                                           size: 18,
                                         )
                                       : Icon(
                                           Icons.close,
-                                          color: AppColor.owing(),
+                                          color: AppColor.owing,
                                           size: 18,
                                         ),
                                 ),
