@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  int percentage = 20;
 
   Widget _buildStatus({String status = '', String count = '', Color color = Colors.white}) {
     return Padding(
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildStatusCircularIndicator() {
+  Widget _buildStatusCircularIndicator({int percent = 0, double val = 0.001}) {
     return Container(
       height: 130,
       width: 130,
@@ -51,12 +52,12 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               height: 130,
               width: 130,
-              decoration:
-                  BoxDecoration(
-                    gradient: SweepGradient(
-                      stops: [0.5, 0.5],
+              decoration: BoxDecoration(
+                  gradient: SweepGradient(
+                      stops: [(percent / 100) * val, 0.1],
                       colors: [AppColor.excluded, Colors.white]),
-                    color: Colors.grey[200], borderRadius: BorderRadius.circular(100)),
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(100)),
             ),
           ),
           Center(
@@ -66,10 +67,14 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
                   gradient: RadialGradient(
-                    center: Alignment.topRight,
-                    radius: 0.8,
-                    colors: [Colors.white, AppColor.bgColor])),
-              child: Center(child: Text('65%', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),)),
+                      center: Alignment.topRight,
+                      radius: 0.8,
+                      colors: [Colors.white, AppColor.bgColor])),
+              child: Center(
+                  child: Text(
+                '$percent %',
+                style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+              )),
             ),
           ),
         ],
@@ -121,6 +126,7 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           setState(() {
                             _selectedIndex = i;
+                            percentage = percentage + 10;
                           });
                         },
                         child: Container(
@@ -147,7 +153,15 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               child: Row(
                 children: [
-                  _buildStatusCircularIndicator(),
+                  TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 0, end: 1),
+                    duration: Duration(seconds: 2),
+                    builder: (context, double _val, _child) {
+                      return Container(
+                          child: _buildStatusCircularIndicator(
+                              percent: (percentage * _val).ceil(), val: _val));
+                    },
+                  ),
                   SizedBox(width: 40),
                   Expanded(
                     child: Container(
