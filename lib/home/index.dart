@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_bills_manager/home/model.dart';
+import 'package:shared_bills_manager/utils/colour.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -10,6 +11,36 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
+  Widget _buildStatus({String status = '', String count = '', Color color = Colors.white}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 30.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 7,
+                width: 7,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+              ),
+              SizedBox(width: 10),
+              Text(
+                status,
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
+          Text(
+            count,
+            style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -59,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                         child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                             decoration: BoxDecoration(
-                              color: _selectedIndex == i ? Color.fromRGBO(48, 140, 106, 1) : null,
+                              color: _selectedIndex == i ?AppColor.paid() : null,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -75,21 +106,33 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 30),
             Container(
-                    height: 130,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              height: 130,
+              width: double.infinity,
               child: Row(
                 children: [
                   Container(
                     height: 130,
                     width: 130,
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100)),
+                    decoration: BoxDecoration(
+                        color: Colors.white, borderRadius: BorderRadius.circular(100)),
                     child: Center(child: Text('65%')),
                   ),
-                  SizedBox(width: 20),
-                  Container(height: 130,
-                  child: Column(children: [
-                    Text('adf', style: TextStyle(color: Colors.white),)
-                  ],)
-                  )
+                  SizedBox(width: 40),
+                  Expanded(
+                    child: Container(
+                        height: 130,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildStatus(status: 'Paid', count: '9', color: AppColor.paid()),
+                            SizedBox(height: 5,),
+                            _buildStatus(status: 'Not paid', count: '4', color: AppColor.owing()),
+                            SizedBox(height: 5,),
+                            _buildStatus(status: 'Excluded', count: '3', color: AppColor.excluded()),
+                          ],
+                        )),
+                  ),
                 ],
               ),
             ),
@@ -152,12 +195,12 @@ class _HomePageState extends State<HomePage> {
                                   child: flatObjList[i].isPaid
                                       ? Icon(
                                           Icons.check,
-                                          color: Colors.green,
+                                          color: AppColor.paid(),
                                           size: 18,
                                         )
                                       : Icon(
                                           Icons.close,
-                                          color: Colors.red.withOpacity(0.7),
+                                          color: AppColor.owing(),
                                           size: 18,
                                         ),
                                 ),
