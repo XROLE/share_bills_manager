@@ -1,4 +1,6 @@
-import 'package:shared_bills_manager/home/bill_types.dart';
+
+
+import 'package:shared_bills_manager/features/home/data/bill_types.dart';
 
 class FlatObject {
   final String billType;
@@ -98,5 +100,4 @@ List<FlatObject> flatObjList = [
     flatNum: 16,
     paidOn: '26 Jun, 02:26 pm'
   ),
-  
 ];

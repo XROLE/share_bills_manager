@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_bills_manager/home/index.dart';
+
+import 'features/home/presentation/index.dart';
 
 void main() {
   runApp(MyApp());

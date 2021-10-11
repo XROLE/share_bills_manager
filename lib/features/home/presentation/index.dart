@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_bills_manager/home/model.dart';
+import 'package:shared_bills_manager/features/home/data/model.dart';
 import 'package:shared_bills_manager/utils/colour.dart';
 
 class HomePage extends StatefulWidget {
