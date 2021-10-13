@@ -105,9 +105,14 @@ class _HomePageState extends State<HomePage> {
                     style:
                         TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  Icon(
-                    Icons.more_vert,
-                    color: Colors.white.withOpacity(0.8),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.more_vert,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
                   )
                 ],
               ),

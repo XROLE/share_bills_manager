@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_bills_manager/features/Authentication/signup.dart';
 
 import 'features/home/presentation/index.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: SignUp(),
     );
   }
 }
