@@ -52,6 +52,7 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.symmetric(horizontal: 30),
           color: Color.fromRGBO(31, 31, 31, 1),
           child: Column(
