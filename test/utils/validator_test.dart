@@ -11,8 +11,8 @@ import 'package:shared_bills_manager/utils/constant.dart';
 import 'package:shared_bills_manager/utils/validator.dart';
 
 void main() {
-  group('Test Validator', () {
-    group('Test Email validator', () {
+  group('Validator', () {
+    group('Email validator', () {
       // Test for empty email
       test("Return error message when email is empty", () {
         expect(Validator.validateEmail(''), Constants.EMPTY_MAIL_STRING);
@@ -26,6 +26,14 @@ void main() {
       // Test for valid email
       test("Return null when email is valid", () {
         expect(Validator.validateEmail('abc@gmail.com'), null);
+      });
+    });
+    group('Password validator', () {
+      test('Validate empty password', () {
+        expect(Validator.validatePassword(''), Constants.INVALID_PASSWORD_LENGHT);
+      });
+      test('Validate correct password', () {
+        expect(Validator.validatePassword('abcABC123.'), null);
       });
     });
   });

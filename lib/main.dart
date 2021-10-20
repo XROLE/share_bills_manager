@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_bills_manager/features/Authentication/signup.dart';
+import 'package:shared_bills_manager/features/Authentication/presentation/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,28 +21,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-    final Future<void> _initializeFirebase =  Firebase.initializeApp();
+  final Future<void> _initializeFirebase = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: FutureBuilder(
-        future: _initializeFirebase,
-        builder: (context, snapshot){
-          if(snapshot.hasError){
-            print('Something went wrong ====================> ${snapshot.error}');
-            return Center(child: Text('Something went wrong'));
-          } else if(snapshot.connectionState == ConnectionState.done){
-            print('Loaded successfully');
-        return SignUp();
-          } else {
-            print('======================= Loading');
-            return Center(child: CupertinoActivityIndicator(),);
-          }
-        }
-    ));
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: FutureBuilder(
+            future: _initializeFirebase,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                print('Something went wrong ====================> ${snapshot.error}');
+                return Center(child: Text('Something went wrong'));
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                print(' =========> Loaded successfully');
+                return SignUp();
+              } else {
+                print('=========> Loading');
+                return Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              }
+            }));
   }
 }
