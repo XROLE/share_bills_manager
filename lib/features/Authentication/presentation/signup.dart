@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_bills_manager/features/Authentication/data/datasource/index.dart';
 import 'package:shared_bills_manager/features/home/presentation/index.dart';
 import 'package:shared_bills_manager/utils/validator.dart';
 
@@ -159,7 +161,7 @@ class _SignUpState extends State<SignUp> {
                           }),
                       SizedBox(height: 50),
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
                           String? _emailError = Validator.validateEmail(_email ?? '');
                           String? _passwordError = Validator.validatePassword(_password ?? '');
 
@@ -173,9 +175,11 @@ class _SignUpState extends State<SignUp> {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(SnackBar(content: Text('Passwords do not match')));
                           } else {
-                            print('=======> $_email');
-                            print('=======> $_password');
-                            print('=======> $_confirmPassword');
+                            print('Signing in =========');
+                            UserCredential? userCredential = await AuthenticateUser()
+                                .signInWithEmailAndPassword(email: _email, password: _password);
+                            print('Done ========= $userCredential');
+
                           }
                         },
                         child: Container(
