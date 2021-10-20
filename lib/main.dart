@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
             print('Loaded successfully');
         return SignUp();
           } else {
-            print('======================= I am a chosen one');
+            print('======================= Loading');
             return Center(child: CupertinoActivityIndicator(),);
           }
         }
