@@ -4,5 +4,5 @@ abstract class SignUpRemoteDataSource {
   /// Call Firebase signInWithEmailAndPassword method
   /// 
   /// Throw a [SeverExeption] for all error codes.
-  Future<UserModel> signUpWithEmailAndPassword({required String email, required String password});
+  Future<UserModel>? signUpWithEmailAndPassword({required String email, required String password});
 }

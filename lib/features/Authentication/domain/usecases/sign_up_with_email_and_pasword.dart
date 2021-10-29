@@ -7,7 +7,7 @@ class SignUp {
   final SignUpRepo signUpRepo;
 
   SignUp({required this.signUpRepo});
-  Future<Either<Failure, UserEntity>?> signUpWithEmailAndPassword(
+  Future<Either<Failure, UserEntity?>?> signUpWithEmailAndPassword(
       {required String email, required String password}) async {
     return await signUpRepo.signUpWithEmailAndPassword(email: email, password: password);
   }

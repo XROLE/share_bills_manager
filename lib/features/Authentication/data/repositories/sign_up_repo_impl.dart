@@ -12,7 +12,7 @@ class SignUpRepoImpl implements SignUpRepo {
   SignUpRepoImpl({required this.networkInfo, required this.signupRemoteDataSource});
 
   @override
-  Future<Either<Failure, UserEntity>>? signUpWithEmailAndPassword(
+  Future<Either<Failure, UserEntity?>>? signUpWithEmailAndPassword(
       {required String email,  required String password}) async {
     networkInfo.isConnected;
     return  Right(await signupRemoteDataSource.signUpWithEmailAndPassword(email: email, password: password));
