@@ -1,4 +1,5 @@
-import 'package:shared_bills_manager/core/error/platform/network_info.dart';
+import 'package:shared_bills_manager/core/error/exceptions.dart';
+import 'package:shared_bills_manager/core/network/network_info.dart';
 import 'package:shared_bills_manager/features/Authentication/data/datasource/sign_up_remote_datasource.dart';
 import 'package:shared_bills_manager/features/Authentication/domain/entities/user.dart';
 import 'package:shared_bills_manager/core/error/failure.dart';
@@ -13,8 +14,13 @@ class SignUpRepoImpl implements SignUpRepo {
 
   @override
   Future<Either<Failure, UserEntity?>>? signUpWithEmailAndPassword(
-      {required String email,  required String password}) async {
+      {required String email, required String password}) async {
     networkInfo.isConnected;
-    return  Right(await signupRemoteDataSource.signUpWithEmailAndPassword(email: email, password: password));
+    try {
+      return Right(await signupRemoteDataSource.signUpWithEmailAndPassword(
+          email: email, password: password));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 }

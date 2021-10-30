@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shared_bills_manager/core/error/platform/network_info.dart';
+import 'package:shared_bills_manager/core/error/exceptions.dart';
+import 'package:shared_bills_manager/core/error/failure.dart';
+import 'package:shared_bills_manager/core/network/network_info.dart';
 import 'package:shared_bills_manager/features/Authentication/data/datasource/sign_up_remote_datasource.dart';
 import 'package:shared_bills_manager/features/Authentication/data/models/user_model.dart';
 import 'package:shared_bills_manager/features/Authentication/data/repositories/sign_up_repo_impl.dart';
@@ -46,7 +48,7 @@ void main() {
         when(mockNetworkInfo.isConnected).thenAnswer((realInvocation) async => true);
       });
 
-      test("Should sign up user when a call to signup remote datasource is successful", () async {
+      test("Should sign up user when a call to signupRemoteDatasource is successful", () async {
         when(mockSignUpRemoteDataSource.signUpWithEmailAndPassword(
                 email: tEmail, password: tPassword))
             .thenAnswer((realInvocation) async => tUserModel);
@@ -55,6 +57,16 @@ void main() {
       verify(mockSignUpRemoteDataSource.signUpWithEmailAndPassword(
           email: tEmail, password: tPassword));
       expect(result, Right(tUserEntity));
+      });
+      test("Should return server failure when a call to signupRemoteDatasource is unsuccessful", () async {
+        when(mockSignUpRemoteDataSource.signUpWithEmailAndPassword(
+                email: tEmail, password: tPassword))
+            .thenThrow(ServerException());
+            
+      final result = await signUpRepoImpl.signUpWithEmailAndPassword(email: tEmail, password: tPassword);
+      verify(mockSignUpRemoteDataSource.signUpWithEmailAndPassword(
+          email: tEmail, password: tPassword));
+      expect(result, Left(ServerFailure()));
       });
 
     });
