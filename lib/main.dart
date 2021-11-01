@@ -5,8 +5,8 @@ import 'package:shared_bills_manager/features/Authentication/presentation/signup
 import 'injection_container.dart' as di;
 
 void main() async {
-  di.init();
   WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   runApp(MyApp());
 }
 

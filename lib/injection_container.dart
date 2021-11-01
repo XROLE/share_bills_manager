@@ -10,7 +10,7 @@ import 'package:shared_bills_manager/features/Authentication/presentation/bloc/s
 
 final sl = GetIt.instance;
 
-void init() {
+Future<void> init() async{
   // Features - SignUp
 
   // Bloc
