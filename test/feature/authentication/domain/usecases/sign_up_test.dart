@@ -8,12 +8,12 @@ import 'package:shared_bills_manager/features/Authentication/domain/usecases/sig
 class MockSignUpRepo extends Mock implements SignUpRepo {}
 
 void main() {
-  late SignUp usecase;
+  late SignUpUseCase usecase;
   late MockSignUpRepo mockSignUpRepo;
 
   setUp(() {
     mockSignUpRepo = MockSignUpRepo();
-    usecase = SignUp(signUpRepo: mockSignUpRepo);
+    usecase = SignUpUseCase(signUpRepo: mockSignUpRepo);
   });
 
   final String tEmail = 'abc@gmail.com';
