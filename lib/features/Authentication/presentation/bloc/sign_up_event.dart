@@ -14,5 +14,14 @@ class SignUpWithEmailAndPassword extends SignUpEvent {
 
   @override
   List<Object?> get props => [email, password];
+}
 
+class SignInWithEmailAndPassword extends SignUpEvent {
+  final String email;
+  final String password;
+
+  SignInWithEmailAndPassword(this.email, this.password);
+
+  @override
+  List<Object?> get props => [email, password];
 }

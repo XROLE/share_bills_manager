@@ -11,4 +11,9 @@ class SignUpUseCase {
       {required String email, required String password}) async {
     return await signUpRepo.signUpWithEmailAndPassword(email: email, password: password);
   }
+
+  Future<Either<Failure, UserEntity?>?> signInWithEmailAndPassword(
+      {required String email, required String password}) async {
+    return await signUpRepo.signInWithEmailAndPassword(email: email, password: password);
+  }
 }

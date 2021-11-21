@@ -35,13 +35,10 @@ class _MyAppState extends State<MyApp> {
             future: _initializeFirebase,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                print('Something went wrong ====================> ${snapshot.error}');
                 return Center(child: Text('Something went wrong'));
               } else if (snapshot.connectionState == ConnectionState.done) {
-                print(' =========> Loaded successfully');
                 return SignUp();
               } else {
-                print('=========> Loading');
                 return Center(
                   child: CupertinoActivityIndicator(),
                 );
