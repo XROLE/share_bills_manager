@@ -7,6 +7,7 @@ abstract class SignUpRemoteDataSource {
   ///
   /// Throw a [SeverExeption] for all error codes.
   Future<UserModel>? signUpWithEmailAndPassword({required String email, required String password});
+  Future<UserModel>? signInWithEmailAndPassword({required String email, required String password});
 }
 
 class SignUpRemoteDataSourceImpl implements SignUpRemoteDataSource {
@@ -17,8 +18,6 @@ class SignUpRemoteDataSourceImpl implements SignUpRemoteDataSource {
   @override
   Future<UserModel>? signUpWithEmailAndPassword(
       {required String email, required String password}) async {
-    print('Email: $email');
-    print('Pssword: $password');
     try {
       UserCredential result =
           await auth.createUserWithEmailAndPassword(email: email, password: password);
@@ -31,10 +30,31 @@ class SignUpRemoteDataSourceImpl implements SignUpRemoteDataSource {
         'emaemailVerifiedil': user?.emailVerified,
       };
       print('user account created successfuly ======================== $user');
-      print('userMap======================== $userMap');
       return UserModel.fromJson(userMap);
     } catch (e) {
       print('Error from the datasource =========================================> $e');
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<UserModel>? signInWithEmailAndPassword(
+      {required String email, required String password}) async {
+    try {
+      UserCredential result =
+          await auth.signInWithEmailAndPassword(email: email, password: password);
+      User? user = result.user;
+
+      Map<String, dynamic> userMap = {
+        'uid': user?.uid ?? '',
+        'email': user?.email ?? '',
+        'displayName': user?.displayName ?? '',
+        'emaemailVerifiedil': user?.emailVerified,
+      };
+      print('User signed in successfully=================> $user');
+      return UserModel.fromJson(userMap);
+    } catch (e) {
+      print('An error occured while signing in ===== $e');
       throw ServerException();
     }
   }

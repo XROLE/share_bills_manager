@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/bloc/sign_up_bloc.dart';
@@ -22,6 +21,7 @@ class _SignUpState extends State<SignUp> {
   String? _password;
   String? _confirmPassword;
 
+  bool isSignUp = true;
   bool _isEmailValid = false;
   bool _isPasswordValid = false;
   bool _isConfirmPasswordValid = false;
@@ -71,8 +71,6 @@ class _SignUpState extends State<SignUp> {
         child: BlocProvider<SignUpBloc>(
           create: (_) => sl<SignUpBloc>(),
           child: BlocBuilder<SignUpBloc, SignUpState>(builder: (innerContext, state) {
-            print('This is the state =================> $state');
-
             return Container(
               height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.symmetric(horizontal: 30),
@@ -153,39 +151,44 @@ class _SignUpState extends State<SignUp> {
                                 });
                               }),
                           SizedBox(height: 10),
-                          _buildCustomTextField(
-                              name: 'Confirm Password',
-                              showCheck: _isConfirmPasswordValid,
-                              onChange: (confirmPassword) {
-                                if (_password == confirmPassword) {
+                          if (isSignUp)
+                            _buildCustomTextField(
+                                name: 'Confirm Password',
+                                showCheck: _isConfirmPasswordValid,
+                                onChange: (confirmPassword) {
+                                  if (_password == confirmPassword) {
+                                    setState(() {
+                                      _isConfirmPasswordValid = true;
+                                    });
+                                  } else {
+                                    _isConfirmPasswordValid = false;
+                                  }
                                   setState(() {
-                                    _isConfirmPasswordValid = true;
+                                    _confirmPassword = confirmPassword;
                                   });
-                                } else {
-                                  _isConfirmPasswordValid = false;
-                                }
-                                setState(() {
-                                  _confirmPassword = confirmPassword;
-                                });
-                              }),
+                                }),
                           SizedBox(height: 50),
                           InkWell(
                             onTap: () async {
                               String? _emailError = Validator.validateEmail(_email ?? '');
                               String? _passwordError = Validator.validatePassword(_password ?? '');
-
-                              if (_emailError != null && _emailError.isNotEmpty) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(content: Text(_emailError)));
-                              } else if (_passwordError != null) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(content: Text(_passwordError)));
-                              } else if (_confirmPassword != _password) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Passwords do not match')));
+                              if (isSignUp) {
+                                if (_emailError != null && _emailError.isNotEmpty) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(content: Text(_emailError)));
+                                } else if (_passwordError != null) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(content: Text(_passwordError)));
+                                } else if (_confirmPassword != _password) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Passwords do not match')));
+                                } else {
+                                  BlocProvider.of<SignUpBloc>(innerContext).add(
+                                      SignUpWithEmailAndPassword(_email ?? '', _password ?? ''));
+                                }
                               } else {
-                              BlocProvider.of<SignUpBloc>(innerContext).add(
-                                  SignUpWithEmailAndPassword(_email ?? '', _password ?? ''));
+                                BlocProvider.of<SignUpBloc>(innerContext)
+                                    .add(SignInWithEmailAndPassword(_email ?? '', _password ?? ''));
                               }
                             },
                             child: Container(
@@ -196,7 +199,7 @@ class _SignUpState extends State<SignUp> {
                                   color: Color.fromRGBO(75, 138, 137, 1),
                                   borderRadius: BorderRadius.circular(8)),
                               child: Text(
-                                'Create Account',
+                                isSignUp ? 'Create Account' : 'Sign In',
                                 style: TextStyle(color: Colors.white, fontSize: 16),
                               ),
                             ),
@@ -206,12 +209,34 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   SizedBox(height: 5),
-                  Container(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Already have an account? Sign In',
-                        style: TextStyle(color: Colors.white.withOpacity(0.4)),
-                      ))
+                  if (isSignUp)
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isSignUp = false;
+                            });
+                          },
+                          child: Text(
+                            'Already have an account? Sign In',
+                            style: TextStyle(color: Colors.white.withOpacity(0.4)),
+                          ),
+                        )),
+                  if (!isSignUp)
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isSignUp = true;
+                            });
+                          },
+                          child: Text(
+                            'Don\'t have an account? Sign Up',
+                            style: TextStyle(color: Colors.white.withOpacity(0.4)),
+                          ),
+                        )),
                 ],
               ),
             );
