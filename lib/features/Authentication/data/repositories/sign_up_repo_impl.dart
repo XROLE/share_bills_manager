@@ -19,18 +19,20 @@ class SignUpRepoImpl implements SignUpRepo {
     try {
       return Right(await signupRemoteDataSource.signUpWithEmailAndPassword(
           email: email, password: password));
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message));
     }
   }
 
-  @override 
-  Future<Either<Failure, UserEntity?>>? signInWithEmailAndPassword({required String email, required String password}) async {
+  @override
+  Future<Either<Failure, UserEntity?>>? signInWithEmailAndPassword(
+      {required String email, required String password}) async {
     networkInfo.isConnected;
-    try{
-      return Right(await signupRemoteDataSource.signInWithEmailAndPassword(email: email, password: password) );
-    } on ServerException {
-      return left(ServerFailure());
+    try {
+      return Right(await signupRemoteDataSource.signInWithEmailAndPassword(
+          email: email, password: password));
+    } on ServerException catch(e) {
+      return left(ServerFailure(e.message));
     }
   }
 }

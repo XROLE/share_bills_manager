@@ -31,9 +31,14 @@ class SignUpRemoteDataSourceImpl implements SignUpRemoteDataSource {
       };
       print('user account created successfuly ======================== $user');
       return UserModel.fromJson(userMap);
-    } catch (e) {
+    } on FirebaseAuthException catch(e) {
+
+      print('THere was firebase auth exception  =========================================> $e');
+      throw ServerException(e.message ?? '');
+    } 
+    catch (e) {
       print('Error from the datasource =========================================> $e');
-      throw ServerException();
+      throw ServerException(e.toString());
     }
   }
 
@@ -53,9 +58,14 @@ class SignUpRemoteDataSourceImpl implements SignUpRemoteDataSource {
       };
       print('User signed in successfully=================> $user');
       return UserModel.fromJson(userMap);
-    } catch (e) {
+    } on FirebaseAuthException catch (e){
+
+      print('There was firebase auth exception ===== $e');
+      throw ServerException(e.message ?? '');
+    }
+    catch (e) {
       print('An error occured while signing in ===== $e');
-      throw ServerException();
+      throw ServerException(e.toString());
     }
   }
 }

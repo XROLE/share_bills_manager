@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_bills_manager/features/Authentication/domain/entities/user.dart';
+import 'package:shared_bills_manager/core/error/failure.dart';
 import 'package:shared_bills_manager/features/Authentication/domain/usecases/sign_up_with_email_and_pasword.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/bloc/sign_up_event.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/bloc/sign_up_states.dart';
@@ -20,14 +20,14 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       final failureOrUserEntity = await signUpUseCase.signUpWithEmailAndPassword(
           email: event.email, password: event.password);
       if (failureOrUserEntity != null)
-        yield failureOrUserEntity.fold((failure) => Error(message: SERVER_FAILURE_MESSAGE),
+        yield failureOrUserEntity.fold((failure) => Error(message: failure.message),
             (userEntity) => Loaded(userEntity: userEntity));
     } else if (event is SignInWithEmailAndPassword) {
       yield Loading();
       final failureOrUserEntity = await signUpUseCase.signInWithEmailAndPassword(
           email: event.email, password: event.password);
       if (failureOrUserEntity != null)
-        yield failureOrUserEntity.fold((failure) => Error(message: SERVER_FAILURE_MESSAGE),
+        yield failureOrUserEntity.fold((failure) => Error(message:failure.message),
             (userEntity) => Loaded(userEntity: userEntity));
     }
   }

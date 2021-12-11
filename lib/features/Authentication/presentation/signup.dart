@@ -71,6 +71,9 @@ class _SignUpState extends State<SignUp> {
         child: BlocProvider<SignUpBloc>(
           create: (_) => sl<SignUpBloc>(),
           child: BlocBuilder<SignUpBloc, SignUpState>(builder: (innerContext, state) {
+            final state = innerContext.watch<SignUpBloc>().state;
+
+            print('This is the state =======> $state');
             return Container(
               height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.symmetric(horizontal: 30),
