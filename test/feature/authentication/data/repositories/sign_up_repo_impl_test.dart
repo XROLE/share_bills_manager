@@ -61,12 +61,12 @@ void main() {
       test("Should return server failure when a call to signupRemoteDatasource is unsuccessful", () async {
         when(mockSignUpRemoteDataSource.signUpWithEmailAndPassword(
                 email: tEmail, password: tPassword))
-            .thenThrow(ServerException());
+            .thenThrow(ServerException('Error'));
             
       final result = await signUpRepoImpl.signUpWithEmailAndPassword(email: tEmail, password: tPassword);
       verify(mockSignUpRemoteDataSource.signUpWithEmailAndPassword(
           email: tEmail, password: tPassword));
-      expect(result, Left(ServerFailure()));
+      expect(result, Left(ServerFailure('Error')));
       });
 
     });
