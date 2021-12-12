@@ -1,10 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/bloc/sign_up_bloc.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/bloc/sign_up_event.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/bloc/sign_up_states.dart';
 import 'package:shared_bills_manager/features/home/presentation/index.dart';
 import 'package:shared_bills_manager/injection_container.dart';
+import 'package:shared_bills_manager/utils/constant.dart';
+import 'package:shared_bills_manager/utils/modal.dart';
+import 'package:shared_bills_manager/utils/toastHelper.dart';
 import 'package:shared_bills_manager/utils/validator.dart';
 
 class SignUp extends StatefulWidget {
@@ -25,8 +31,9 @@ class _SignUpState extends State<SignUp> {
   bool _isEmailValid = false;
   bool _isPasswordValid = false;
   bool _isConfirmPasswordValid = false;
+  bool _canReloadBlocState = false;
 
-  Widget socialMediaAuthBuilder({String image = ''}) {
+  Widget socialMediaAuthBuilder({String image = Constants.EMPTY_MAIL_STRING}) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         height: 60,
@@ -73,7 +80,21 @@ class _SignUpState extends State<SignUp> {
           child: BlocBuilder<SignUpBloc, SignUpState>(builder: (innerContext, state) {
             final state = innerContext.watch<SignUpBloc>().state;
 
-            print('This is the state =======> $state');
+            if (state is Loading) {
+              WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                SharedBillsModalDialog.loadindModal(innerContext);
+              });
+            } else if (state is Loaded && _canReloadBlocState) {
+              WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                Navigator.pop(Get.context ?? innerContext);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+              });
+            } else if (state is Error && _canReloadBlocState) {
+              Navigator.pop(Get.context ?? innerContext);
+              WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                ToastHelper.showError(title: "Error", message: state.message);
+              });
+            }
             return Container(
               height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.symmetric(horizontal: 30),
@@ -81,22 +102,18 @@ class _SignUpState extends State<SignUp> {
               child: Column(
                 children: [
                   SizedBox(height: 100),
-                  Container(height: 100, child: Image.asset('assets/img/logo.png')),
+                  Container(height: 100, child: Image.asset(ImageUrls.LOGO_IMAGE_URL)),
                   Center(
-                    child: InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
-                        },
-                        child: Text(
-                          'Shared Bills',
+                    child: Text(
+                          Constants.SHARED_BILLS,
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                        )),
+                        ),
                   ),
                   SizedBox(height: 50),
                   Container(
                       alignment: Alignment.centerLeft,
-                      child: Text('Sign up with one of the following',
+                      child: Text(Constants.SIGN_UP_WITH_ONE_OF_THE_FOLLOWING,
                           style: TextStyle(color: Colors.white.withOpacity(0.7)))),
                   SizedBox(height: 20),
                   Container(
@@ -104,13 +121,13 @@ class _SignUpState extends State<SignUp> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          socialMediaAuthBuilder(image: 'assets/img/google.png'),
+                          socialMediaAuthBuilder(image: ImageUrls.GOOGLE_IMAGE_URL),
                           SizedBox(width: 12),
-                          socialMediaAuthBuilder(image: 'assets/img/twitter.png'),
+                          socialMediaAuthBuilder(image: ImageUrls.TWITTER_IMAGE_URL),
                           SizedBox(width: 12),
-                          socialMediaAuthBuilder(image: 'assets/img/facebook.png'),
+                          socialMediaAuthBuilder(image: ImageUrls.FACEBOOK_IMAGE_URL),
                           SizedBox(width: 12),
-                          socialMediaAuthBuilder(image: 'assets/img/apple.png'),
+                          socialMediaAuthBuilder(image: ImageUrls.APPLE_IMAGE_URL),
                         ],
                       )),
                   SizedBox(height: 70),
@@ -121,12 +138,13 @@ class _SignUpState extends State<SignUp> {
                       child: Column(
                         children: [
                           _buildCustomTextField(
-                              name: 'Email',
+                              name: Constants.EMAIL,
                               showCheck: _isEmailValid,
                               onChange: (email) {
                                 String? _errorString = Validator.validateEmail(email);
                                 if (_errorString == null) {
                                   setState(() {
+                                    _canReloadBlocState = false;
                                     _isEmailValid = true;
                                   });
                                 } else {
@@ -139,28 +157,45 @@ class _SignUpState extends State<SignUp> {
                               }),
                           SizedBox(height: 10),
                           _buildCustomTextField(
-                              name: 'Password',
+                              name: Constants.PASSWORD,
                               showCheck: _isPasswordValid,
                               onChange: (password) {
                                 String? _errorString = Validator.validatePassword(password);
                                 if (_errorString == null) {
-                                  _isPasswordValid = true;
+                                  setState(() {
+                                    _canReloadBlocState = false;
+                                    _isPasswordValid = true;
+                                  });
                                 } else {
-                                  _isPasswordValid = false;
+                                  setState(() {
+                                    _isPasswordValid = false;
+                                  });
                                 }
+                                if (_password != null &&
+                                    _password != Constants.EMPTY_STRING &&
+                                    _password == _confirmPassword) {
+                                  setState(() {
+                                    _isConfirmPasswordValid = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    _isConfirmPasswordValid = false;
+                                  });
+                                }
+
                                 setState(() {
                                   _password = password;
-                                  _isConfirmPasswordValid = false;
                                 });
                               }),
                           SizedBox(height: 10),
                           if (isSignUp)
                             _buildCustomTextField(
-                                name: 'Confirm Password',
+                                name: Constants.CONFIRM_PASSWORD,
                                 showCheck: _isConfirmPasswordValid,
                                 onChange: (confirmPassword) {
                                   if (_password == confirmPassword) {
                                     setState(() {
+                                      _canReloadBlocState = false;
                                       _isConfirmPasswordValid = true;
                                     });
                                   } else {
@@ -173,25 +208,33 @@ class _SignUpState extends State<SignUp> {
                           SizedBox(height: 50),
                           InkWell(
                             onTap: () async {
+                              setState(() {
+                                _canReloadBlocState = true;
+                              });
                               String? _emailError = Validator.validateEmail(_email ?? '');
                               String? _passwordError = Validator.validatePassword(_password ?? '');
+                              if (_emailError != null && _emailError.isNotEmpty) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(content: Text(_emailError)));
+                                return;
+                              } else if (_passwordError != null) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(content: Text(_passwordError)));
+                                return;
+                              }
                               if (isSignUp) {
-                                if (_emailError != null && _emailError.isNotEmpty) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(content: Text(_emailError)));
-                                } else if (_passwordError != null) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(content: Text(_passwordError)));
-                                } else if (_confirmPassword != _password) {
+                                if (_confirmPassword != _password) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Passwords do not match')));
+                                      SnackBar(content: Text(Constants.PASSWORDS_DO_NOT_MATCH)));
                                 } else {
                                   BlocProvider.of<SignUpBloc>(innerContext).add(
-                                      SignUpWithEmailAndPassword(_email ?? '', _password ?? ''));
+                                      SignUpWithEmailAndPassword(_email ?? Constants.EMPTY_STRING,
+                                          _password ?? Constants.EMPTY_STRING));
                                 }
                               } else {
-                                BlocProvider.of<SignUpBloc>(innerContext)
-                                    .add(SignInWithEmailAndPassword(_email ?? '', _password ?? ''));
+                                BlocProvider.of<SignUpBloc>(innerContext).add(
+                                    SignInWithEmailAndPassword(_email ?? Constants.EMPTY_STRING,
+                                        _password ?? Constants.EMPTY_STRING));
                               }
                             },
                             child: Container(
@@ -202,7 +245,7 @@ class _SignUpState extends State<SignUp> {
                                   color: Color.fromRGBO(75, 138, 137, 1),
                                   borderRadius: BorderRadius.circular(8)),
                               child: Text(
-                                isSignUp ? 'Create Account' : 'Sign In',
+                                isSignUp ? Constants.CREATE_ACCOUNT : Constants.SIGN_IN,
                                 style: TextStyle(color: Colors.white, fontSize: 16),
                               ),
                             ),
@@ -222,7 +265,7 @@ class _SignUpState extends State<SignUp> {
                             });
                           },
                           child: Text(
-                            'Already have an account? Sign In',
+                            Constants.ALREADY_HAVE_AN_ACCOUNT,
                             style: TextStyle(color: Colors.white.withOpacity(0.4)),
                           ),
                         )),
@@ -236,7 +279,7 @@ class _SignUpState extends State<SignUp> {
                             });
                           },
                           child: Text(
-                            'Don\'t have an account? Sign Up',
+                            Constants.DONT_HAVE_AN_ACCOUNT,
                             style: TextStyle(color: Colors.white.withOpacity(0.4)),
                           ),
                         )),

@@ -1,13 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_bills_manager/features/Authentication/presentation/signup.dart';
+import 'package:shared_bills_manager/features/home/presentation/index.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  runApp(MyApp());
+  runApp(
+   GetMaterialApp(home: MyApp()));
 }
 
 /// We are using a StatefulWidget such that we only create the [Future] once,
