@@ -4,7 +4,7 @@ class UserModel extends UserEntity {
   final String uid;
   final String displayName;
   final String email;
-  final bool emailVerified;
+  final bool? emailVerified;
 
   UserModel({
     required this.uid,

@@ -29,15 +29,15 @@ class SignUpRemoteDataSourceImpl implements SignUpRemoteDataSource {
         'displayName': user?.displayName ?? '',
         'emaemailVerifiedil': user?.emailVerified,
       };
-      print('user account created successfuly ======================== $user');
+      print('$user');
       return UserModel.fromJson(userMap);
     } on FirebaseAuthException catch(e) {
 
-      print('THere was firebase auth exception  =========================================> $e');
+      print('$e');
       throw ServerException(e.message ?? '');
     } 
     catch (e) {
-      print('Error from the datasource =========================================> $e');
+      print('$e');
       throw ServerException(e.toString());
     }
   }
